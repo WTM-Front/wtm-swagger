@@ -10,7 +10,7 @@ const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin")
 const rootDir = path.dirname(__dirname);
-const outputPaht = path.resolve(rootDir, "build");
+const outputPaht = path.resolve(rootDir, "dist");
 const basicConfig = require("./basics.confit");
 module.exports = (params) => {
     const { deployWrite = "", DefinePlugin } = params;
@@ -25,10 +25,10 @@ module.exports = (params) => {
             // 清理目录
             new CleanWebpackPlugin([outputPaht], { root: rootDir }),
             // gzip 压缩
-            new CompressionPlugin({
-                test: [/css\/.*css/, /js\/.*js/]
-                // deleteOriginalAssets: true
-            }),
+            // new CompressionPlugin({
+            //     test: [/css\/.*css/, /js\/.*js/]
+            //     // deleteOriginalAssets: true
+            // }),
         ],
         mode: 'production',
         devtool: false,

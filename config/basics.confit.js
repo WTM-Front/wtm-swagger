@@ -31,7 +31,7 @@ module.exports = (params) => {
         },
         output: {
             // 无出口路径使用编译时间戳
-            path: path.resolve(rootDir, "build", time.valueOf()),
+            path: path.resolve(rootDir, "dist", time.valueOf()),
             publicPath: '/',
             filename: `js/[name].js`,
             chunkFilename: `js/[name].js`,
