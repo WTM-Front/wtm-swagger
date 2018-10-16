@@ -116,7 +116,7 @@ module.exports = (params) => {
                     test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
                     use: [
                         'url-loader?limit=50000&name=[path][name].[ext]',
-                        'image-webpack-loader',
+                        // 'image-webpack-loader',
                     ]
                 },
             ],
