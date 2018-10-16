@@ -12,7 +12,7 @@
     "npm": ">=6.0.0"
   },
   "keywords": [],
-  "author": "lengyingxin <lengyingxin8966@gmail.com> (https://github.com/LengYXin)",
+  "author": "LengYXin <lengyingxin8966@gmail.com> (https://github.com/LengYXin)",
   "license": "ISC",
   "dependencies": {
     "@antv/g2": "^3.2.7",
