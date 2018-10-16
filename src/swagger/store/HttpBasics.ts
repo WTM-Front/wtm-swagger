@@ -204,6 +204,10 @@ export class HttpBasics {
         return new Rx.Observable(observer => {
             this.jsonpCounter++;
             const key = '_jsonp_callback_' + this.jsonpCounter;
+            const script = document.createElement('script');
+            script.src = url + key;
+            script.onerror = (err) => observer.error(err);
+            document.body.appendChild(script);
             window[key] = (response) => {
                 // clean up
                 script.parentNode.removeChild(script);
@@ -212,10 +216,6 @@ export class HttpBasics {
                 observer.next(response);
                 observer.complete();
             };
-            const script = document.createElement('script');
-            script.src = url + key;
-            script.onerror = (err) => observer.error(err);
-            document.body.appendChild(script);
         })
     };
     /**

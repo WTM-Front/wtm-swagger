@@ -22,9 +22,8 @@ module.exports = webpack(env => {
              * swaggerDoc 代理地址
              */
             '/swaggerDoc': {
-                target: 'http://localhost:8765/api-docs',
+                target: 'http://localhost:8765/',
                 pathRewrite: {
-                    "^/swaggerDoc": ""
                 },
                 ...config
             },

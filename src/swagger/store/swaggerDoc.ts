@@ -157,7 +157,7 @@ class ObservableStore {
             return this.docData
         }
         this.SwaggerDocJson = docs;
-        let { tags, definitions, paths } = docs;
+        let { tags = [], definitions, paths } = docs;
         let format = {
             // 模型控制器
             tags: [...tags],
