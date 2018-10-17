@@ -58,7 +58,7 @@ interface ICommon {
     }
 }
 /**
- * 自定义属性
+ * 自定义属性 .....
  */
 interface IAttribute {
     // 可用
