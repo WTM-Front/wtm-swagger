@@ -6,6 +6,7 @@
  * @desc [description]
 */
 /// <reference path="../typings/index.d.ts" />
+/// <reference path="../typings/swagger.d.ts" />
 import 'babel-polyfill';
 require('antd/dist/antd.less')
 require('nprogress/nprogress.css')
