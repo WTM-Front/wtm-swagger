@@ -107,6 +107,7 @@ class ObservableStore {
                 this.createState = true;
             });
             notification['success']({
+                key: "codeError",
                 message: '创建成功',
                 description: '',
             });
@@ -118,10 +119,14 @@ class ObservableStore {
      * @param param 
      */
     async  delete(param) {
-        const data = await Http.post("/server/delete", param).map(this.map).toPromise();
+        const data = await Http.post("/server/delete", {
+            name: param.name
+        }).map(this.map).toPromise();
         if (data) {
             this.getContainers();
             notification['success']({
+                key: "codeError",
+
                 message: '删除成功',
                 description: '',
             });
@@ -151,6 +156,8 @@ class ObservableStore {
         const wtmfront = this.project.wtmfrontConfig;
         if (!docs) {
             notification['error']({
+                key: "codeError",
+
                 message: '获取Swagger文档失败',
                 description: '',
             });
@@ -246,6 +253,7 @@ class ObservableStore {
             } catch (error) {
                 console.error(key, error);
                 notification['error']({
+                    key: "codeError",
                     message: `解析Swagger文档失败 Molde:${key}`,
                     description: error.message,
                 });
@@ -253,7 +261,12 @@ class ObservableStore {
         });
 
         format.tags = format.tags.filter(x => !lodash.isNil(x.paths))
+        notification.info({
+            key: "codeError",
 
+            message: `解析完成`,
+            description: `成功（${format.tags.length}）失败（${format.error.length}）`,
+        })
         console.log(format)
         return format;
     }

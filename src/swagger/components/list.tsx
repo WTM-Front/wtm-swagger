@@ -19,7 +19,7 @@ export default class App extends React.Component<any, any> {
 
     }
     onDelete(x) {
-        this.props.swaggerDoc.delete({ containersName: x.component })
+        this.props.swaggerDoc.delete(x)
     }
     render() {
 

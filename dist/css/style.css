@@ -1,3 +1,10 @@
+.existingItems-modal {
+  min-height: 700px;
+}
+.existingItems-modal .ant-modal-content {
+  min-height: 700px;
+}
+
 .swagger-create {
   margin-top: 10px;
   min-height: 50vh;

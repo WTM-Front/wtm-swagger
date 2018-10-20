@@ -8,8 +8,7 @@
 import { Tabs } from 'antd';
 import * as React from 'react';
 import Info from './components/info';
-import List from './components/list';
-// import Create from './components/create';
+import ExistingItems from './existingItems';
 import Create from './create/index';
 import Store from './store';
 import "./style.less";
@@ -35,7 +34,7 @@ export default class IApp extends React.Component<any, any> {
                         <Create />
                     </TabPane>
                     <TabPane tab="组件列表" key="3">
-                        <List />
+                        <ExistingItems />
                     </TabPane>
                 </Tabs>
             </div>

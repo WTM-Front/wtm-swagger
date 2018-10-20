@@ -5,11 +5,10 @@
  * @modify date 2018-09-10 05:01:05
  * @desc [description]
 */
-import { notification, Button } from 'antd';
-import lodash from 'lodash';
-import { action, toJS, observable } from 'mobx';
-// import wtmfront from 'wtmfront.json';
+import { message, notification } from 'antd';
 import update from 'immutability-helper';
+import lodash from 'lodash';
+import { action, observable, toJS } from 'mobx';
 import swaggerDoc from './swaggerDoc';
 const initData: ISwaggerModel = {
     key: null,
@@ -119,11 +118,7 @@ class ObservableStore {
                 this.Model.key = this.GUID();
                 this.readyModel.push(this.Model);
             } else {
-                notification.error({
-                    key: "decompose",
-                    message: `组件 ${this.Model.componentName} 已经存在`,
-                    description: '',
-                })
+                message.error(`组件 ${this.Model.componentName} 已经存在`)
             }
         } else {
             const index = lodash.findIndex(this.readyModel, x => x.key == this.Model.key);
@@ -131,11 +126,7 @@ class ObservableStore {
             res = true;
         }
         if (res) {
-            notification.success({
-                key: "decompose",
-                message: `组件 ${this.Model.componentName} 已保存`,
-                description: '',
-            })
+            message.success(`组件 ${this.Model.componentName} 已保存`)
             this.onReset();
         }
     }

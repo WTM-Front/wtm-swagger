@@ -32,14 +32,16 @@ export default class IApp extends React.Component<any, any> {
           accepts={["sourceTags", "readyTags"]}
           onDrop={item => this.handleDrop(item)}
         >
-          <ModelBody key={decompose.Model.name + decompose.Model.key} />
+          <EditModelBody key={decompose.Model.name + decompose.Model.key} />
         </Drop>
       </div>
     );
   }
 }
 @observer
-class ModelBody extends React.Component<any, any> {
+export class EditModelBody extends React.Component<{
+  onSave?: (values) => void
+}, any> {
   state = {
     activeKey: "1"
   }
@@ -47,10 +49,14 @@ class ModelBody extends React.Component<any, any> {
   onSave() {
     this.infoForm.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
         values.menuName = values.menuName || values.componentName;
-        decompose.onSaveInfo(values);
-        decompose.onSave()
+
+        if (this.props.onSave) {
+          this.props.onSave(values)
+        } else {
+          decompose.onSaveInfo(values);
+          decompose.onSave()
+        }
       } else {
         this.setState({ activeKey: "1" })
       }

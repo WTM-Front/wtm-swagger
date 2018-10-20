@@ -18,9 +18,9 @@ export default class App extends React.Component<any, any> {
         return (
             <div>
                 <h2>项目信息~</h2>
-                <p><span>contextRoot: </span><span>{this.props.swaggerDoc.project.contextRoot}</span></p>
-                <p><span>subMenuPath: </span><span>{this.props.swaggerDoc.project.subMenuPath}</span></p>
-                <p><span>containersPath: </span><span>{this.props.swaggerDoc.project.containersPath}</span></p>
+                <p><span>项目地址: </span><span>{this.props.swaggerDoc.project.contextRoot}</span></p>
+                <p><span>菜单地址: </span><span>{this.props.swaggerDoc.project.subMenuPath}</span></p>
+                <p><span>组件地址: </span><span>{this.props.swaggerDoc.project.containersPath}</span></p>
             </div>
         );
     }
