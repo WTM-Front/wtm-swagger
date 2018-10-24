@@ -67,7 +67,7 @@ export class EditModelBody extends React.Component<{
 
   }
   render() {
-    if (!decompose.Model.address) {
+    if (decompose.Model.columns.length == 0) {
       return <Alert
         message=""
         description="拖拽左侧的数据模型到中间的编辑区域"
@@ -76,7 +76,7 @@ export class EditModelBody extends React.Component<{
     }
     return (
       <>
-        <div><span style={{ color: "#cf1322", fontWeight: 600 }}>{decompose.Model.name}  </span><Divider type="vertical" />  <Button icon="save" onClick={this.onSave.bind(this)}>保存</Button></div>
+        <div style={{ textAlign: "center" }}><span style={{ color: "#cf1322", fontWeight: 600 }}>{decompose.Model.name}  </span><Divider type="vertical" />  <Button icon="save" onClick={this.onSave.bind(this)}>保存</Button></div>
         <Tabs
           // defaultActiveKey="1"
           activeKey={this.state.activeKey}
@@ -94,7 +94,7 @@ export class EditModelBody extends React.Component<{
                 <ModelList type="search" />
               </TabPane>
               <TabPane tab="添加&修改" key="3">
-                <ModelList type="install" />
+                <ModelList type="insert" />
               </TabPane>
               <TabPane tab="操作权限" key="4">
                 <ModelList type="btn" />

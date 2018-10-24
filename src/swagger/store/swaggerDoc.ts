@@ -7,7 +7,7 @@
 */
 import { notification } from 'antd';
 import lodash from 'lodash';
-import { action, observable, runInAction } from "mobx";
+import { action, observable, runInAction, toJS } from "mobx";
 // import wtmfront from 'wtmfront.json';
 import Http from "./HttpBasics";
 import decompose from './decompose';
@@ -99,9 +99,11 @@ class ObservableStore {
      * @param param 
      */
     async create(param?) {
+        // return console.log(toJS(param));
         const data = await Http.post("/server/create", param).map(this.map).toPromise();
         if (data) {
             decompose.onReset();
+            decompose.onEmpty();
             this.StepsCurrent = 0;
             runInAction(() => {
                 this.createState = true;
@@ -183,7 +185,7 @@ class ObservableStore {
                 // const detail = lodash.find(value, (o) => o.tags && o.tags.length);
                 let path: any = {};
                 // 标准接口
-                let standard: { name?: string, type?: string } = {};
+                let standard: { name?: string, method?: string } = {};
                 //console.log(key)
                 // 公共控制器
                 const isPubcliStandard = wtmfront.public.some(x => lodash.includes(key, x)) //lodash.includes(wtmfront.publicStandard, key);
@@ -211,9 +213,9 @@ class ObservableStore {
                     return console.warn("匹配失败", key);
                 }
                 // 请求类型 统一小写
-                const typeKey = lodash.toLower(standard.type);
+                const method = lodash.toLower(standard.method);
                 // 获取文档中的对应类型接口
-                path = value[typeKey];
+                path = value[method];
                 if (path) {
                     // 获取 tag 名称。
                     const tagName = lodash.find(path.tags, (o) => o && o.length);
@@ -229,7 +231,7 @@ class ObservableStore {
                         tag.paths = tag.paths || {};
                         tag.paths[key] = {
                             key,
-                            typeKey,
+                            method,
                             ...path
                         }
                     } else {
@@ -244,7 +246,7 @@ class ObservableStore {
                         }
                         tag.paths[key] = {
                             key,
-                            typeKey,
+                            method,
                             ...path
                         }
                         format.tags.push(tag);

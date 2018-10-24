@@ -5,22 +5,27 @@
  * @modify date 2018-09-10 05:01:20
  * @desc [description]
 */
-import { Tabs } from 'antd';
+import { Modal, Tabs } from 'antd';
+import { observer } from 'mobx-react';
 import * as React from 'react';
-import Info from './components/info';
-import ExistingItems from './existingItems';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import Create from './create/index';
+import ExistingItems from './existingItems';
+import Info from './info';
 import Store from './store';
 import "./style.less";
+const { swaggerDoc, decompose } = Store;
 const TabPane = Tabs.TabPane;
-// @DragDropContext(HTML5Backend)
+@DragDropContext(HTML5Backend)
+@observer
 export default class IApp extends React.Component<any, any> {
     componentDidMount() {
-        Store.swaggerDoc.getModel();
+        swaggerDoc.getModel();
     }
     onChange(key) {
         if (key == 3) {
-            Store.swaggerDoc.getContainers();
+            swaggerDoc.getContainers();
         }
     }
     public render() {
@@ -37,6 +42,20 @@ export default class IApp extends React.Component<any, any> {
                         <ExistingItems />
                     </TabPane>
                 </Tabs>
+                <Modal
+                        title="模型JSON"
+                        width="70%"
+                        centered
+                        footer={null}
+                        visible={decompose.visible.ModelJSON}
+                        onCancel={() => {
+                            decompose.onVisible("ModelJSON", false)
+                        }}
+                    >
+                        <pre>
+                            <code> {decompose.ModelJSON}</code>
+                        </pre>
+                    </Modal>
             </div>
 
         );

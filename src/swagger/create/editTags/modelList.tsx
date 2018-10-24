@@ -7,6 +7,7 @@
  */
 import { Button, Col, Divider, Icon, List, Row, Switch } from 'antd';
 import { action } from 'mobx';
+import lodash from 'lodash';
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import Source from '../../../components/drop/source';
@@ -26,12 +27,12 @@ let gutter = 14
 // @inject(()=>Store)
 @observer
 export default class App extends React.Component<
-{ type: 'columns' | 'search' | 'install' | 'update' | 'btn' },
+{ type: 'columns' | 'search' | 'insert' | 'update' | 'btn' },
 any
 > {
   @action.bound
-  onChange(e, data, type = 'install') {
-    if (type == 'install') {
+  onChange(e, data, type = 'insert') {
+    if (type == 'insert') {
       data.attribute.available = e
     } else {
       data.attribute.update = e
@@ -66,15 +67,13 @@ any
   }
   render() {
     if (this.props.type === 'btn') {
-      const buttonShow = decompose.Model.actions
-      const data = Object.keys(buttonShow)
+      const data = lodash.toArray(decompose.Model.actions)
       return (
         <>
           <Row type="flex" justify="center" align="top" gutter={gutter}>
             <Col span={ColSpan.name}>名称</Col>
             <Col span={ColSpan.available}>可用</Col>
           </Row>
-
           <List
             bordered
             dataSource={data}
@@ -88,7 +87,7 @@ any
                   style={{ width: '100%' }}
                 >
                   <Col span={ColSpan.name}>
-                    {item}
+                    {item.name}
                   </Col>
                   <Col span={ColSpan.available}>
                     <Switch
@@ -101,7 +100,7 @@ any
                       }}
                       checkedChildren={<Icon type="check" />}
                       unCheckedChildren={<Icon type="cross" />}
-                      defaultChecked={buttonShow[item]}
+                      defaultChecked={item.state}
                     />
                   </Col>
                 </Row>
@@ -119,7 +118,7 @@ any
             <Col span={ColSpan.name}>描述</Col>
             <Col span={ColSpan.type}>数据类型</Col>
             <Col span={ColSpan.available}>启用</Col>
-            {/* {this.props.type == 'install' ? (
+            {/* {this.props.type == 'insert' ? (
               <Col span={ColSpan.update}>编辑</Col>
             ) : null} */}
             {this.props.type != 'columns' ? (
@@ -155,11 +154,11 @@ any
                     // defaultChecked={item.attribute.available}
                     checked={item.attribute.available}
                     disabled={
-                      this.props.type == 'install' && !item.allowEmptyValue
+                      this.props.type == 'insert' && !item.allowEmptyValue
                     }
                   />
                 </Col>
-                {/* {this.props.type == 'install' ? (
+                {/* {this.props.type == 'insert' ? (
                   <Col span={ColSpan.update}>
                     <Switch
                       onChange={e => {

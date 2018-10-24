@@ -16,7 +16,7 @@ import ReadyTags from './readyTags';
 import SourceTags from './sourceTags';
 import './style.less';
 const { swaggerDoc, decompose } = Store;
-@DragDropContext(HTML5Backend)
+// @DragDropContext(HTML5Backend)
 @observer
 export default class extends React.Component {
     public render() {
@@ -28,20 +28,7 @@ export default class extends React.Component {
                         <Col span={15} className="swagger-create-EditTags"><EditTags /></Col>
                         <Col span={5} className="swagger-create-ReadyTags"><ReadyTags /></Col>
                     </Row>
-                    <Modal
-                        title="模型JSON"
-                        width="70%"
-                        centered
-                        footer={null}
-                        visible={decompose.visible.ModelJSON}
-                        onCancel={() => {
-                            decompose.onVisible("ModelJSON", false)
-                        }}
-                    >
-                        <pre>
-                            <code> {decompose.ModelJSON}</code>
-                        </pre>
-                    </Modal>
+                  
                
             </Spin>
         )

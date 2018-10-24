@@ -37,7 +37,7 @@ export default class IApp extends React.Component<any, any> {
         // </div>}
         bordered
         dataSource={decompose.readyModel.slice()}
-        renderItem={(item: ISwaggerModel, index) => (
+        renderItem={(item: WTM.ISwaggerModel, index) => (
           <Drag model={item} type="readyTags">
             <List.Item actions={[
               <Icon type="close" theme="outlined" style={{ cursor: "pointer" }} title="删除" onClick={e => { decompose.onDelete(index) }} />,

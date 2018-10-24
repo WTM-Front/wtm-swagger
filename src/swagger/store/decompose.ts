@@ -10,7 +10,7 @@ import update from 'immutability-helper';
 import lodash from 'lodash';
 import { action, observable, toJS } from 'mobx';
 import swaggerDoc from './swaggerDoc';
-const initData: ISwaggerModel = {
+const initData: WTM.ISwaggerModel = {
     key: null,
     name: null,
     componentName: null,
@@ -19,18 +19,65 @@ const initData: ISwaggerModel = {
     description: null,
     template: "default",
     actions: {
-        install: true,
-        update: true,
-        delete: true,
-        import: true,
-        export: true
+        insert: {
+            state: true,
+            name: "添加"
+        },
+        update: {
+            state: true,
+            name: "修改"
+        },
+        delete: {
+            state: true,
+            name: "删除"
+        },
+        import: {
+            state: true,
+            name: "导入"
+        },
+        export: {
+            state: true,
+            name: "导出"
+        },
+    },
+    urls: {
+        search: {
+            src: "/test/search",
+            method: "post"
+        },
+        details: {
+            src: "/test/details/{id}",
+            method: "get"
+        },
+        insert: {
+            src: "/test/insert",
+            method: "post"
+        },
+        update: {
+            src: "/test/update",
+            method: "post"
+        },
+        delete: {
+            src: "/test/delete",
+            method: "post"
+        },
+        import: {
+            src: "/test/import",
+            method: "post"
+        },
+        export: {
+            src: "/test/export",
+            method: "post"
+        },
+        template: {
+            src: "/test/template",
+            method: "post"
+        }
     },
     idKey: "id",    //唯一标识
-    address: null,    //地址控制器
     columns: [],    //teble 列
     search: [],     //搜索条件
-    // edit: {},    //编辑字段
-    install: [],    //添加字段
+    insert: [],    //添加字段
     update: [],    //修改字段
 
 }
@@ -54,9 +101,9 @@ class ObservableStore {
         ModelJSON: false
     };
     /** 当前编辑模型 */
-    @observable Model: ISwaggerModel = lodash.cloneDeep(initData);
+    @observable Model: WTM.ISwaggerModel = lodash.cloneDeep(initData);
     /** 就绪待生成模型 */
-    @observable readyModel: ISwaggerModel[] = [];
+    @observable readyModel: WTM.ISwaggerModel[] = [];
     /** 选择的 tag  swagger 原始 格式数据*/
     @observable selectTag = {
         description: "",//备注
@@ -73,7 +120,7 @@ class ObservableStore {
     /** 功能改变 */
     @action.bound
     changeButton(attr, flag: boolean) {
-        this.Model.actions[attr] = flag
+        attr.state = flag
     }
     /** 重置数据 模型 */
     @action.bound
@@ -188,8 +235,16 @@ class ObservableStore {
     @action.bound
     analysisAddress(tag = this.selectTag) {
         const { include } = swaggerDoc.project.wtmfrontConfig;
-        const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
-        this.Model.address = path.key.replace(include.search.name, "");
+        lodash.mapValues(include, (value, key) => {
+            value.name = lodash.toLower(value.name);
+            value.method = lodash.toLower(value.method);
+            const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, value.name));
+            this.Model.urls[key] = {
+                src: path.key,
+                method: path.method,
+            };
+        })
+        // this.Model.address = path.key.replace(include.search.name, "");
     }
     /**
      * 解析 表格列字段
@@ -211,15 +266,15 @@ class ObservableStore {
     analysisEdit(tag = this.selectTag) {
         const { include } = swaggerDoc.project.wtmfrontConfig;
 
-        const pathInstall = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.install.name));
-        const pathUpdate = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.install.name));
+        const pathInsert = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
+        const pathUpdate = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
         // 结果索引
-        const install = lodash.find(pathInstall.parameters, 'schema');
-        const definitionsInstall = this.analysisDefinitions(install);
+        const Insert = lodash.find(pathInsert.parameters, 'schema');
+        const definitionsInsert = this.analysisDefinitions(Insert);
         // 结果索引
         const update = lodash.find(pathUpdate.parameters, 'schema');
         const definitionsUpdate = this.analysisDefinitions(update);
-        this.Model.install = lodash.toArray(definitionsInstall.properties);
+        this.Model.insert = lodash.toArray(definitionsInsert.properties);
         this.Model.update = lodash.toArray(definitionsUpdate.properties);
     }
     /**
@@ -283,7 +338,7 @@ class ObservableStore {
             if (typeof value.maxLength != 'undefined') {
                 value.rules.push({ max: value.maxLength, message: `max length ${value.maxLength}!` });
             }
-            let attribute: IAttribute = {
+            let attribute: WTM.IAttribute = {
                 // 可用
                 available: true,
                 // 可编辑
@@ -309,7 +364,7 @@ class ObservableStore {
      * 交换模型位置
      */
     @action.bound
-    onExchangeModel(type: "columns" | "search" | "install" | "update" | "btn", dragIndex: number, hoverIndex: number) {
+    onExchangeModel(type: "columns" | "search" | "insert" | "update" | "btn", dragIndex: number, hoverIndex: number) {
         let dataSource = toJS(this.Model[type]);
         const drag = dataSource[dragIndex];
         // const hover = dataSource[hoverIndex];

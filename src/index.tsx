@@ -18,6 +18,6 @@ import "./style.less";
 notification.config({
   duration: 3,
   top: 60 
-});
+}); 
 ReactDOM.render(<Swagger />,
   document.getElementById('root'));

@@ -63,7 +63,7 @@ export default class App extends React.Component<any, any> {
                 <Modal
                     title="修改"
                     width="70%"
-                    className="existingItems-modal"
+                    className="existingItems-modal "
                     centered
                     footer={null}
                     visible={this.state.visible}
