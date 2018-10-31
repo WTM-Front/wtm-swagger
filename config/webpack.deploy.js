@@ -23,7 +23,7 @@ module.exports = (params) => {
             // }),
         ],
         mode: 'production',
-        // devtool: false,
+        devtool: 'source-map',
         // optimization: {
         //     minimizer: [
         //         new UglifyJsPlugin({
