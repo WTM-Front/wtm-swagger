@@ -23,19 +23,19 @@ module.exports = (params) => {
             // }),
         ],
         mode: 'production',
-        devtool: false,
-        optimization: {
-            minimizer: [
-                new UglifyJsPlugin({
-                    parallel: true,
-                    uglifyOptions: {
-                        compress: {
-                            drop_console: true
-                        }
-                    }
-                })
-            ]
-        },
+        // devtool: false,
+        // optimization: {
+        //     minimizer: [
+        //         new UglifyJsPlugin({
+        //             parallel: true,
+        //             uglifyOptions: {
+        //                 compress: {
+        //                     drop_console: true
+        //                 }
+        //             }
+        //         })
+        //     ]
+        // },
         deployWrite: deployWrite,
         DefinePlugin: {
             PRODUCTION: true,
