@@ -50,11 +50,10 @@ export class EditModelBody extends React.Component<{
     this.infoForm.validateFields((err, values) => {
       if (!err) {
         values.menuName = values.menuName || values.componentName;
-
+        decompose.onSaveInfo(values);
         if (this.props.onSave) {
           this.props.onSave(values)
         } else {
-          decompose.onSaveInfo(values);
           decompose.onSave()
         }
       } else {

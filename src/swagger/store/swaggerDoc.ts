@@ -33,7 +33,10 @@ class ObservableStore {
         templates: ['default']
     };
     /*** 现有模块列表 */
-    @observable containers = [];
+    @observable containers = {
+        containers: [],
+        resources: {}
+    };
     /*** 模块列表 */
     @observable createParam = {
         // 组件信息
@@ -115,14 +118,30 @@ class ObservableStore {
         }
         return data;
     }
+     /**
+     * 修改模块
+     * @param param 
+     */
+    async update(param?) {
+        const data = await Http.post("/server/update", param).map(this.map).toPromise();
+        if (data) {
+            decompose.onReset();
+            this.getContainers();
+            notification['success']({
+                key: "codeError",
+                message: '修改成功',
+                description: '',
+            });
+        }
+        return data;
+    }
     /**
      * 删除
      * @param param 
      */
     async  delete(param) {
-        const data = await Http.post("/server/delete", {
-            name: param.name
-        }).map(this.map).toPromise();
+        delete param.pageConfig
+        const data = await Http.post("/server/delete",param).map(this.map).toPromise();
         if (data) {
             this.getContainers();
             notification['success']({

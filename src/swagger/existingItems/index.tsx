@@ -24,6 +24,7 @@ export default class App extends React.Component<any, any> {
     state = {
         visible: false
     }
+    updateModel: any = {};
     componentDidMount() {
 
     }
@@ -32,11 +33,17 @@ export default class App extends React.Component<any, any> {
     }
     onUpdate(data) {
         // 以编辑修改
-        decompose.onSetModel(data.pageConfig);
+        this.updateModel = toJS(data);
+        decompose.onSetModel(this.updateModel.pageConfig);
         this.setState({ visible: true })
     }
-    onSave() {
-        console.log(toJS(decompose.Model));
+    async onSave() {
+        await swaggerDoc.update({
+            component: decompose.Model,
+            key: this.updateModel.key,
+            name: this.updateModel.name,
+        })
+        this.setState({ visible: false })
     }
     render() {
 
@@ -47,7 +54,7 @@ export default class App extends React.Component<any, any> {
                     // loading={initLoading}
                     itemLayout="horizontal"
                     // loadMore={loadMore}
-                    dataSource={this.props.swaggerDoc.containers.slice()}
+                    dataSource={this.props.swaggerDoc.containers.containers.slice()}
                     renderItem={item => (
                         <List.Item actions={[
                             <ShowCode data={item.pageConfig} />,
