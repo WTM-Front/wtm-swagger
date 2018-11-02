@@ -79,6 +79,7 @@ export default class App extends React.Component<any, any> {
                     centered
                     footer={null}
                     visible={this.state.visible}
+                    destroyOnClose={true}
                     onCancel={() => {
                         decompose.onReset()
                         this.setState({ visible: false })
