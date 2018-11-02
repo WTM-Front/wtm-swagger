@@ -153,9 +153,9 @@ any
                     unCheckedChildren={<Icon type="cross" />}
                     // defaultChecked={item.attribute.available}
                     checked={item.attribute.available}
-                    disabled={
-                      this.props.type == 'insert' && !item.allowEmptyValue
-                    }
+                    // disabled={
+                    //   this.props.type == 'insert' && !item.allowEmptyValue
+                    // }
                   />
                 </Col>
                 {/* {this.props.type == 'insert' ? (
