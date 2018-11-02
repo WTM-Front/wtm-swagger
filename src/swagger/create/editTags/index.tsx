@@ -77,7 +77,7 @@ export class EditModelBody extends React.Component<{
       <>
         <div style={{ textAlign: "center" }}><span style={{ color: "#cf1322", fontWeight: 600 }}>{decompose.Model.name}  </span><Divider type="vertical" />  <Button icon="save" onClick={this.onSave.bind(this)}>保存</Button></div>
         <Tabs
-          // defaultActiveKey="1"
+          defaultActiveKey="1"
           activeKey={this.state.activeKey}
           onChange={activeKey => this.setState({ activeKey })}
         >
