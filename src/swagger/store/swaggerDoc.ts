@@ -57,7 +57,6 @@ class ObservableStore {
      * 公共接口
      */
     map = (x) => {
-        console.log(x);
         if (x.code) {
             if (x.code == 200) {
                 return x.data;
@@ -269,7 +268,6 @@ class ObservableStore {
             message: `解析完成`,
             description: `成功（${format.tags.length}）失败（${format.error.length}）`,
         })
-        console.log(format)
         return format;
     }
     /**

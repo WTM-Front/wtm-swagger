@@ -8,6 +8,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");//提取css
 const tsImportPluginFactory = require('ts-import-plugin');//按需导入
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin")
+const TerserPlugin = require('terser-webpack-plugin');
 const rootDir = path.dirname(__dirname);
 const time = moment().format('YYYY-MM-DD HH:mm:ss');
 module.exports = (params) => {
@@ -58,7 +59,7 @@ module.exports = (params) => {
             extensions: [".ts", ".tsx", ".js", ".json"],
             // 模块别名
             alias: {
-              
+
             },
             ...resolve,
         },
@@ -94,7 +95,7 @@ module.exports = (params) => {
                     test: /\.(less|css)$/,
                     use: [
                         MiniCssExtractPlugin.loader,
-                        `css-loader?sourceMap=true&minimize=true`,
+                        `css-loader?sourceMap=false&minimize=true`,
                         {
                             loader: 'postcss-loader', options: {
                                 ident: 'postcss',
@@ -131,13 +132,32 @@ module.exports = (params) => {
         // https://gist.github.com/sokra/1522d586b8e5c0f5072d7565c2bee693
         optimization: {
             minimizer: [
-                new UglifyJsPlugin({
-                    parallel: true,
-                    uglifyOptions: {
+                new TerserPlugin({
+                    terserOptions: {
+                        parse: {
+                            // https://github.com/facebook/create-react-app/pull/4234
+                            ecma: 8,
+                        },
                         compress: {
-                            drop_console: false
-                        }
-                    }
+                            ecma: 5,
+                            warnings: false,
+                            // https://github.com/facebook/create-react-app/issues/2376
+                            // https://github.com/mishoo/UglifyJS2/issues/2011
+                            comparisons: false,
+                        },
+                        mangle: {
+                            safari10: true,
+                        },
+                        output: {
+                            ecma: 5,
+                            comments: false,
+                            // https://github.com/facebook/create-react-app/issues/2488
+                            ascii_only: true,
+                        },
+                    },
+                    parallel: true,
+                    cache: true,
+                    sourceMap:true,
                 })
             ],
             splitChunks: {
@@ -149,6 +169,7 @@ module.exports = (params) => {
                     }
                 },
             },
+            // runtimeChunk: true,
             ...optimization,
         },
         plugins: [
@@ -170,15 +191,26 @@ module.exports = (params) => {
                 chunkFilename: "css/vendors-[id].css"
             }),
             new HtmlWebpackPlugin({
+                inject: true,
                 template: './src/index.html',
-                hash: true,
-                minify: true,
+                minify: {
+                  removeComments: true,
+                  collapseWhitespace: true,
+                  removeRedundantAttributes: true,
+                  useShortDoctype: true,
+                  removeEmptyAttributes: true,
+                  removeStyleLinkTypeAttributes: true,
+                  keepClosingSlash: true,
+                  minifyJS: true,
+                  minifyCSS: true,
+                  minifyURLs: true,
+                },
                 vconsole: `
-        <!--              Q&A @冷颖鑫 (lengyingxin8966@gmail.com)          -->   
-        <!--              Build Time： ${time}   ( *¯ ꒳¯*)!!              -->
-        ${deployWrite}
-                `
-            }),
+                <!--              Q&A @冷颖鑫 (lengyingxin8966@gmail.com)          -->   
+                <!--              Build Time： ${time}   ( *¯ ꒳¯*)!!              -->
+                ${deployWrite}
+                        `
+              }),
             ...plugins,
         ],
     };

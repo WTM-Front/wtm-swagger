@@ -10,9 +10,11 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import ShowCode from '../create/showCode';
 import Store from '../store';
+import lodash from 'lodash';
 const { swaggerDoc, decompose } = Store;
 import { EditModelBody } from '../create/editTags';
 import "./style.less"
+import { toJS } from 'mobx';
 @inject(() => Store)
 @observer
 export default class App extends React.Component<any, any> {
@@ -32,6 +34,9 @@ export default class App extends React.Component<any, any> {
         // 以编辑修改
         decompose.onSetModel(data.pageConfig);
         this.setState({ visible: true })
+    }
+    onSave() {
+        console.log(toJS(decompose.Model));
     }
     render() {
 
@@ -72,7 +77,7 @@ export default class App extends React.Component<any, any> {
                         this.setState({ visible: false })
                     }}
                 >
-                    <EditModelBody onSave={e => console.log(e)} />
+                    <EditModelBody onSave={this.onSave.bind(this)} />
                 </Modal>
             </div>
         );
