@@ -330,13 +330,13 @@ class ObservableStore {
             value.rules = [];
             // 添加验证
             if (!value.allowEmptyValue) {
-                value.rules.push({ required: true, message: `Please input your ${value.key}!` });
+                value.rules.push({ required: true, message: `${value.description} 不能为空!` });
             }
             if (typeof value.minLength != 'undefined') {
-                value.rules.push({ min: value.minLength, message: `min length ${value.minLength}!` });
+                value.rules.push({ min: value.minLength, message: `${value.description} 最小长度 ${value.minLength}位!` });
             }
             if (typeof value.maxLength != 'undefined') {
-                value.rules.push({ max: value.maxLength, message: `max length ${value.maxLength}!` });
+                value.rules.push({ max: value.maxLength, message: `${value.description} 最大长度 ${value.maxLength}位!` });
             }
             let attribute: WTM.IAttribute = {
                 // 可用
