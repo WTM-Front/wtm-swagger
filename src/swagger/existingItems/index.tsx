@@ -66,7 +66,8 @@ export default class App extends React.Component<any, any> {
                             <Skeleton avatar title={false} loading={item.loading} active>
                                 <List.Item.Meta
                                     avatar={<Avatar icon="menu-fold" />}
-                                    description={item.name}
+                                    title={`${item.pageConfig.menuName} (${item.pageConfig.name})`}
+                                    description={"组件："+item.name}
                                 />
                             </Skeleton>
                         </List.Item>
