@@ -189,18 +189,26 @@ class ObservableStore {
      */
     onAnalysis(index) {
         // console.time();
-        if (!this.definitions) {
-            this.definitions = toJS(swaggerDoc.docData.definitions);
-        }
-        const selectTag = this.selectTag = toJS(swaggerDoc.docData.tags[index]);
-        if (this.ModelMap.has(selectTag.name)) {
-            this.Model = this.ModelMap.get(selectTag.name);
-        } else {
-            this.analysisAddress();
-            this.analysisColumns();
-            this.analysisSearch();
-            this.analysisEdit();
-            this.ModelMap.set(selectTag.name, toJS(this.Model));
+        try {
+            if (!this.definitions) {
+                this.definitions = toJS(swaggerDoc.docData.definitions);
+            }
+            const selectTag = this.selectTag = toJS(swaggerDoc.docData.tags[index]);
+            if (this.ModelMap.has(selectTag.name)) {
+                this.Model = this.ModelMap.get(selectTag.name);
+            } else {
+                this.analysisAddress();
+                this.analysisColumns();
+                this.analysisSearch();
+                this.analysisEdit();
+                this.ModelMap.set(selectTag.name, toJS(this.Model));
+            }
+        } catch (error) {
+            notification['error']({
+                key: "decompose",
+                message: '无法获取列表数据结构  解析失败',
+                description: '',
+            });
         }
         // console.timeEnd();
         console.log("--------------------------", this);
@@ -209,21 +217,29 @@ class ObservableStore {
     @action.bound
     onAnalysisTag(tag) {
         console.log(toJS(tag));
-        if (!this.definitions) {
-            this.definitions = toJS(swaggerDoc.docData.definitions);
-        }
-        const selectTag = this.selectTag = toJS(tag);
-        if (this.ModelMap.has(selectTag.name)) {
-            this.Model = this.ModelMap.get(selectTag.name);
-        } else {
-            this.Model = lodash.cloneDeep(initData);
-            this.analysisAddress();
-            this.analysisColumns();
-            this.analysisSearch();
-            this.analysisEdit();
-            this.Model.name = this.selectTag.name;
-            this.Model.description = this.selectTag.description;
-            this.ModelMap.set(selectTag.name, toJS(this.Model));
+        try {
+            if (!this.definitions) {
+                this.definitions = toJS(swaggerDoc.docData.definitions);
+            }
+            const selectTag = this.selectTag = toJS(tag);
+            if (this.ModelMap.has(selectTag.name)) {
+                this.Model = this.ModelMap.get(selectTag.name);
+            } else {
+                this.Model = lodash.cloneDeep(initData);
+                this.analysisAddress();
+                this.analysisColumns();
+                this.analysisSearch();
+                this.analysisEdit();
+                this.Model.name = this.selectTag.name;
+                this.Model.description = this.selectTag.description;
+                this.ModelMap.set(selectTag.name, toJS(this.Model));
+            }
+        } catch (error) {
+            console.error(error)
+            notification['error']({
+                message: '无法获取列表数据结构  解析失败',
+                description: '',
+            });
         }
         // console.timeEnd();
         console.log("--------------------------", toJS(this.Model));
@@ -234,6 +250,7 @@ class ObservableStore {
      */
     @action.bound
     analysisAddress(tag = this.selectTag) {
+
         const { include } = swaggerDoc.project.wtmfrontConfig;
         lodash.mapValues(include, (value, key) => {
             value.name = lodash.toLower(value.name);
@@ -309,7 +326,6 @@ class ObservableStore {
                 definitions = this.definitions[key];
             } catch (error) {
                 notification['error']({
-                    key: "decompose",
                     message: '无法获取列表数据结构  解析失败',
                     description: '',
                 });

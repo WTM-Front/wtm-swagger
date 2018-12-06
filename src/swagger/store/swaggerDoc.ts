@@ -106,6 +106,7 @@ class ObservableStore {
         if (data) {
             decompose.onReset();
             decompose.onEmpty();
+            this.getContainers();
             this.StepsCurrent = 0;
             runInAction(() => {
                 this.createState = true;

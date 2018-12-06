@@ -8,6 +8,7 @@
 import { Icon, List, Tabs, Button } from 'antd';
 import { observer } from 'mobx-react';
 import * as React from 'react';
+import lodash from 'lodash';
 // import Box from './Box';
 import Drag from '../../../components/drop/drag';
 import Store from '../../store';
@@ -46,15 +47,22 @@ class DocDataTags extends React.Component<any, any> {
         </div>}
         bordered
         dataSource={swaggerDoc.docData.tags}
-        renderItem={item => (
-          <Drag model={item} type="sourceTags">
-            <List.Item actions={
+        renderItem={item => {
+          let clas = ''//existingItems
+          if (lodash.some(swaggerDoc.containers.containers, x => {
+            return x.pageConfig.description == item.description
+          })) {
+            clas = 'existingItems'
+          }
+
+          return <Drag model={item} type="sourceTags">
+            <List.Item className={clas} actions={
               [<ShowCode data={item} />]
             }>
               {item.name}
             </List.Item>
           </Drag>
-        )}
+        }}
       />
     );
   }

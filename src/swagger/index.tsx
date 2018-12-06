@@ -20,8 +20,9 @@ const TabPane = Tabs.TabPane;
 @DragDropContext(HTML5Backend)
 @observer
 export default class IApp extends React.Component<any, any> {
-    componentDidMount() {
-        swaggerDoc.getModel();
+    async componentDidMount() {
+         swaggerDoc.getContainers();
+         swaggerDoc.getModel();
     }
     onChange(key) {
         if (key == 3) {
@@ -43,19 +44,19 @@ export default class IApp extends React.Component<any, any> {
                     </TabPane>
                 </Tabs>
                 <Modal
-                        title="模型JSON"
-                        width="70%"
-                        centered
-                        footer={null}
-                        visible={decompose.visible.ModelJSON}
-                        onCancel={() => {
-                            decompose.onVisible("ModelJSON", false)
-                        }}
-                    >
-                        <pre>
-                            <code> {decompose.ModelJSON}</code>
-                        </pre>
-                    </Modal>
+                    title="模型JSON"
+                    width="70%"
+                    centered
+                    footer={null}
+                    visible={decompose.visible.ModelJSON}
+                    onCancel={() => {
+                        decompose.onVisible("ModelJSON", false)
+                    }}
+                >
+                    <pre>
+                        <code> {decompose.ModelJSON}</code>
+                    </pre>
+                </Modal>
             </div>
 
         );
