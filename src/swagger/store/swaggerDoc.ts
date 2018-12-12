@@ -218,7 +218,6 @@ class ObservableStore {
                 } else {
                     // 匹配当前接口是否符合 配置要求
                     standard = lodash.find(wtmfront.include, (o) => {
-                        // console.log(key, o.name);
                         return lodash.includes(key, o.name)
                     })
                     //  if(!standard)return;

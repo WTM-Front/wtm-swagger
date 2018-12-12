@@ -236,7 +236,7 @@ class ObservableStore {
             }
         } catch (error) {
             console.error(error)
-            notification['error']({
+            notification['warn']({
                 message: '无法获取列表数据结构  解析失败',
                 description: '',
             });
@@ -255,12 +255,18 @@ class ObservableStore {
         lodash.mapValues(include, (value, key) => {
             value.name = lodash.toLower(value.name);
             value.method = lodash.toLower(value.method);
+            if (key === "details") {
+                console.log(key, value);
+            }
             const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, value.name));
-            this.Model.urls[key] = {
-                src: path.key,
-                method: path.method,
-            };
+            if (path) {
+                this.Model.urls[key] = {
+                    src: path && path.key,
+                    method: path && path.method,
+                };
+            }
         })
+        console.log(toJS(this.Model.urls));
         // this.Model.address = path.key.replace(include.search.name, "");
     }
     /**
@@ -268,46 +274,68 @@ class ObservableStore {
      */
     @action.bound
     analysisColumns(tag = this.selectTag) {
-        const { include } = swaggerDoc.project.wtmfrontConfig;
-        const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
-        // 结果索引
-        const responses = lodash.find(path.responses, 'schema');
-        const definitions = this.analysisDefinitions(responses, true);
-
-        this.Model.columns = lodash.toArray(definitions.properties);
+        try {
+            const { include } = swaggerDoc.project.wtmfrontConfig;
+            const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
+            // 结果索引
+            const responses = lodash.find(path.responses, 'schema');
+            const definitions = this.analysisDefinitions(responses, true);
+            this.Model.columns = lodash.toArray(definitions.properties);
+        } catch (error) {
+            console.error("表格列解析失败", error);
+            notification['warn']({
+                message: '表格列解析失败',
+                description: '',
+            });
+        }
     }
     /**
      * 解析 编辑列字段
      */
     @action.bound
     analysisEdit(tag = this.selectTag) {
-        const { include } = swaggerDoc.project.wtmfrontConfig;
-
-        const pathInsert = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
-        const pathUpdate = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
-        // 结果索引
-        const Insert = lodash.find(pathInsert.parameters, 'schema');
-        const definitionsInsert = this.analysisDefinitions(Insert);
-        // 结果索引
-        const update = lodash.find(pathUpdate.parameters, 'schema');
-        const definitionsUpdate = this.analysisDefinitions(update);
-        this.Model.insert = lodash.toArray(definitionsInsert.properties);
-        this.Model.update = lodash.toArray(definitionsUpdate.properties);
+        try {
+            const { include } = swaggerDoc.project.wtmfrontConfig;
+            const pathInsert = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
+            const pathUpdate = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
+            // 结果索引
+            const Insert = lodash.find(pathInsert.parameters, 'schema');
+            const definitionsInsert = this.analysisDefinitions(Insert);
+            // 结果索引
+            const update = lodash.find(pathUpdate.parameters, 'schema');
+            const definitionsUpdate = this.analysisDefinitions(update);
+            this.Model.insert = lodash.toArray(definitionsInsert.properties);
+            this.Model.update = lodash.toArray(definitionsUpdate.properties);
+        } catch (error) {
+            console.error("编辑列解析失败", error);
+            notification['warn']({
+                message: '编辑列解析失败',
+                description: '',
+            });
+        }
     }
     /**
     * 解析 搜索列字段
     */
     @action.bound
     analysisSearch(tag = this.selectTag) {
-        const { include } = swaggerDoc.project.wtmfrontConfig;
-        const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
-        // 参数 索引
-        const parameters = lodash.find(path.parameters, 'schema');
-        const schema = lodash.find(parameters, '$ref');
-        const key = schema.$ref.match(/#\/definitions\/\S+\W(\w+)\W+/)[1];
-        const definitions = lodash.cloneDeep(this.definitions[key]);
-        this.setAttribute(definitions);
-        this.Model.search = lodash.toArray(definitions.properties);
+        try {
+            const { include } = swaggerDoc.project.wtmfrontConfig;
+            const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
+            // 参数 索引
+            const parameters = lodash.find(path.parameters, 'schema');
+            const schema = lodash.find(parameters, '$ref');
+            const key = schema.$ref.match(/#\/definitions\/\S+\W(\w+)\W+/)[1];
+            const definitions = lodash.cloneDeep(this.definitions[key]);
+            this.setAttribute(definitions);
+            this.Model.search = lodash.toArray(definitions.properties);
+        } catch (error) {
+            console.error("搜索列解析失败", error);
+            notification['warn']({
+                message: '搜索列解析失败',
+                description: '',
+            });
+        }
     }
     /**
      *  解析 模型
