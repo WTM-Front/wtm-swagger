@@ -156,10 +156,18 @@ class ObservableStore {
     }
     /** 保存模型 */
     @action.bound
-    onSave() {
+    async onSave() {
         let res = false;
+        // 检查 项目中 是否已经存在组件
+        await swaggerDoc.getContainers();
+        let index = lodash.findIndex(swaggerDoc.containers.containers, x => x.name == this.Model.componentName);
+        if (index == -1) {
+
+        } else {
+            return message.error(`组件 ${this.Model.componentName} 已经存在`)
+        }
         if (lodash.isNil(this.Model.key)) {
-            const index = lodash.findIndex(this.readyModel, x => x.componentName == this.Model.componentName);
+            index = lodash.findIndex(this.readyModel, x => x.componentName == this.Model.componentName);
             if (index == -1) {
                 res = true;
                 this.Model.key = this.GUID();
@@ -168,7 +176,7 @@ class ObservableStore {
                 message.error(`组件 ${this.Model.componentName} 已经存在`)
             }
         } else {
-            const index = lodash.findIndex(this.readyModel, x => x.key == this.Model.key);
+            index = lodash.findIndex(this.readyModel, x => x.key == this.Model.key);
             this.readyModel.splice(index, 1, this.Model);
             res = true;
         }
