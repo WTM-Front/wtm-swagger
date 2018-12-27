@@ -66,13 +66,13 @@ export class EditModelBody extends React.Component<{
 
   }
   render() {
-    if (decompose.Model.columns.length == 0) {
-      return <Alert
-        message=""
-        description="拖拽左侧的数据模型到中间的编辑区域"
-        type="info"
-      />
-    }
+    // if (decompose.Model.name && decompose.Model.name.length == 0) {
+    //   return <Alert
+    //     message=""
+    //     description="拖拽左侧的数据模型到中间的编辑区域"
+    //     type="info"
+    //   />
+    // }
     return (
       <>
         <div style={{ textAlign: "center" }}><span style={{ color: "#cf1322", fontWeight: 600 }}>{decompose.Model.name}  </span><Divider type="vertical" />  <Button icon="save" onClick={this.onSave.bind(this)}>保存</Button></div>
