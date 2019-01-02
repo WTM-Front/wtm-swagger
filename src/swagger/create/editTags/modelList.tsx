@@ -5,8 +5,8 @@
  * @modify date 2018-09-10 04:47:37
  * @desc [description]
  */
-import { Button, Col, Divider, Icon, List, Row, Switch } from 'antd';
-import { action } from 'mobx';
+import { Button, Col, Divider, Icon, List, Row, Switch, Select } from 'antd';
+import { action, toJS } from 'mobx';
 import lodash from 'lodash';
 import { observer } from 'mobx-react';
 import * as React from 'react';
@@ -45,6 +45,11 @@ any
   }
   dataSource() {
     return Store.decompose.Model[this.props.type].slice()
+  }
+  renderErrr() {
+    if (Store.decompose.Model.name == "" || Store.decompose.Model.name == null) {
+      return <AnalysisSelect {...this.props} />
+    }
   }
   /**
    * 关联
@@ -111,7 +116,8 @@ any
       )
     }
     return (
-      <div style={{ textAlign: "left" }}>
+      <div className="edit-model" style={{ textAlign: "left" }}>
+        {this.renderErrr()}
         <List.Item>
           <Row type="flex" align="top" gutter={gutter} style={{ width: '100%', paddingLeft: 10 }}>
             <Col span={ColSpan.key}>Key</Col>
@@ -153,9 +159,9 @@ any
                     unCheckedChildren={<Icon type="cross" />}
                     // defaultChecked={item.attribute.available}
                     checked={item.attribute.available}
-                    // disabled={
-                    //   this.props.type == 'insert' && !item.allowEmptyValue
-                    // }
+                  // disabled={
+                  //   this.props.type == 'insert' && !item.allowEmptyValue
+                  // }
                   />
                 </Col>
                 {/* {this.props.type == 'insert' ? (
@@ -179,5 +185,57 @@ any
         ))}
       </div>
     )
+  }
+}
+
+/**
+ * 错误连接解析
+ */
+class AnalysisSelect extends React.Component<{ type: 'columns' | 'search' | 'insert' | 'update' | 'btn' }, any> {
+  selectValue = null;
+  onAnalysis() {
+    console.log(this.selectValue);
+    if (this.selectValue) {
+      switch (this.props.type) {
+        case 'columns':
+          decompose.analysisColumns(this.selectValue, true)
+          break;
+        case 'search':
+          decompose.analysisSearch(this.selectValue, true)
+          break;
+        case 'insert':
+        case 'update':
+          decompose.analysisEdit(this.selectValue, true)
+          break;
+
+      }
+    }
+  }
+  onSelectChange(e) {
+    const errPath = swaggerDoc.docData.error.find(x => x.key == e)
+    if (errPath) {
+      this.selectValue = toJS(errPath.value["get"] || errPath.value["post"]);
+    }
+  }
+  render() {
+    return (
+      <Row>
+        <Col span={22}>
+          <Select
+            style={{ width: '100%' }}
+            allowClear
+            showSearch
+            placeholder="模型路径"
+            onChange={this.onSelectChange.bind(this)}
+            filterOption={(inputValue, option) => option.key.toString().indexOf(inputValue) > -1}
+          >
+            {swaggerDoc.docData.error.map(x => {
+              return <Select.Option key={x.key} value={x.key}>{x.key}</Select.Option>
+            })}
+          </Select>
+        </Col>
+        <Col><Button onClick={this.onAnalysis.bind(this)}>解析</Button></Col>
+      </Row>
+    );
   }
 }

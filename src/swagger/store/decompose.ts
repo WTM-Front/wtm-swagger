@@ -281,10 +281,10 @@ class ObservableStore {
      * 解析 表格列字段
      */
     @action.bound
-    analysisColumns(tag = this.selectTag) {
+    analysisColumns(tag = this.selectTag, errorAns = false) {
         try {
             const { include } = swaggerDoc.project.wtmfrontConfig;
-            const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
+            const path = errorAns ? tag : lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
             // 结果索引
             const responses = lodash.find(path.responses, 'schema');
             const definitions = this.analysisDefinitions(responses, true);
@@ -301,11 +301,11 @@ class ObservableStore {
      * 解析 编辑列字段
      */
     @action.bound
-    analysisEdit(tag = this.selectTag) {
+    analysisEdit(tag = this.selectTag, errorAns = false) {
         try {
             const { include } = swaggerDoc.project.wtmfrontConfig;
-            const pathInsert = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
-            const pathUpdate = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
+            const pathInsert = errorAns ? tag : lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
+            const pathUpdate = errorAns ? tag : lodash.find(tag.paths, (o) => lodash.includes(o.key, include.insert.name));
             // 结果索引
             const Insert = lodash.find(pathInsert.parameters, 'schema');
             const definitionsInsert = this.analysisDefinitions(Insert);
@@ -326,10 +326,13 @@ class ObservableStore {
     * 解析 搜索列字段
     */
     @action.bound
-    analysisSearch(tag = this.selectTag) {
+    analysisSearch(tag = this.selectTag, errorAns = false) {
         try {
+            if (!this.definitions) {
+                this.definitions = toJS(swaggerDoc.docData.definitions);
+            }
             const { include } = swaggerDoc.project.wtmfrontConfig;
-            const path = lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
+            const path = errorAns ? tag : lodash.find(tag.paths, (o) => lodash.includes(o.key, include.search.name));
             // 参数 索引
             const parameters = lodash.find(path.parameters, 'schema');
             const schema = lodash.find(parameters, '$ref');
@@ -352,12 +355,21 @@ class ObservableStore {
      */
     analysisDefinitions(parameters, isColumns = false) {
         // const parameters = lodash.find(path.parameters, 'schema');
+        if (!this.definitions) {
+            this.definitions = toJS(swaggerDoc.docData.definitions);
+        }
         const schema = lodash.find(parameters, '$ref');
         let key = schema.$ref.replace("#/definitions/", "");
         let definitions = this.definitions[key];
+        console.log(definitions);
         if (isColumns) {
             try {
                 // 匹配  AData«List«Corp»» 返回的列表数据结构
+                if (definitions.properties.data.items) {
+                    const items = definitions.properties.data.items;
+                    key = items.$ref.replace("#/definitions/", "");
+                    definitions = this.definitions[key];
+                }
                 key = definitions.properties.data.$ref.match(/#\/definitions\/\S+\W(\w+)\W+/)[1];
                 definitions = this.definitions[key];
             } catch (error) {

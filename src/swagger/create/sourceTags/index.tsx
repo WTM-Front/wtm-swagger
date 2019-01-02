@@ -39,6 +39,7 @@ class DocDataTags extends React.Component<any, any> {
     return (
       <List
         size="large"
+        className="doc-data-list"
         // header={<div style={{ textAlign: "center" }}>模型列表</div>}
         footer={<div>
           <Button icon="code" block onClick={e => {
@@ -73,6 +74,7 @@ class ErrorTags extends React.Component<any, any> {
     return (
       <List
         size="large"
+        className="doc-data-list"
         header={<div style={{ textAlign: "center" }}>无法匹配规则接口</div>}
         bordered
         dataSource={swaggerDoc.docData.error}

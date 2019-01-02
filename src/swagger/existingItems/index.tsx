@@ -56,7 +56,7 @@ export default class App extends React.Component<any, any> {
                     // loadMore={loadMore}
                     dataSource={this.props.swaggerDoc.containers.containers.slice()}
                     renderItem={item => (
-                        <List.Item actions={[
+                        <List.Item className="existingItems-item" actions={[
                             <ShowCode data={item.pageConfig} />,
                             <a onClick={this.onUpdate.bind(this, item)}>修改</a>,
                             <Popconfirm title="Sure to delete?" onConfirm={this.onDelete.bind(this, item)} >

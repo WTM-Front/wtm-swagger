@@ -16,6 +16,12 @@
 .swagger-create .swagger-create-SourceTags .existingItems {
   background: #78f18e;
 }
+.swagger-create .swagger-create-SourceTags .doc-data-list {
+  height: -webkit-calc(100vh - 180px);
+  height: -moz-calc(100vh - 180px);
+  height: calc(100vh - 180px);
+  overflow: auto;
+}
 .swagger-create .swagger-create-EditTags > div {
   -moz-border-radius: 4px;
        border-radius: 4px;
@@ -79,6 +85,9 @@ pre > code {
 }
 .existingItems-modal .ant-tabs-nav-scroll {
   text-align: center;
+}
+.existingItems-item:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .sam-container-manage {
