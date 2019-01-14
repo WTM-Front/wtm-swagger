@@ -381,7 +381,7 @@ class ObservableStore {
             }
         }
         definitions = lodash.cloneDeep(definitions);
-        this.setAttribute(definitions);
+        this.setAttribute(definitions, isColumns);
         return definitions
     }
     common = "/common/combo"
@@ -389,19 +389,8 @@ class ObservableStore {
      * 设置属性 
      * @param definitions 
      */
-    setAttribute(definitions) {
+    setAttribute(definitions, isColumns = false) {
         lodash.forEach(definitions.properties, (value, key) => {
-            value.rules = [];
-            // 添加验证
-            if (!value.allowEmptyValue) {
-                value.rules.push({ required: true, message: `${value.description} 不能为空!` });
-            }
-            if (typeof value.minLength != 'undefined') {
-                value.rules.push({ min: value.minLength, message: `${value.description} 最小长度 ${value.minLength}位!` });
-            }
-            if (typeof value.maxLength != 'undefined') {
-                value.rules.push({ max: value.maxLength, message: `${value.description} 最大长度 ${value.maxLength}位!` });
-            }
             let attribute: WTM.IAttribute = {
                 // 可用
                 available: true,
@@ -410,18 +399,29 @@ class ObservableStore {
                 // 绑定模型公共地址
                 // commonAddress: this.swaggerDoc.common,
             };
-            // console.log(value)
-            if (value.example && value.example.combo) {
-                attribute.common = {
-                    address: this.common,
-                    params: {
-                        id: value.example.combo
+            if (!isColumns) {
+                value.rules = [];
+                // 添加验证
+                if (!value.allowEmptyValue) {
+                    value.rules.push({ required: true, message: `${value.description} 不能为空!` });
+                }
+                if (typeof value.minLength != 'undefined') {
+                    value.rules.push({ min: value.minLength, message: `${value.description} 最小长度 ${value.minLength}位!` });
+                }
+                if (typeof value.maxLength != 'undefined') {
+                    value.rules.push({ max: value.maxLength, message: `${value.description} 最大长度 ${value.maxLength}位!` });
+                }
+                if (value.example && value.example.combo) {
+                    attribute.common = {
+                        address: this.common,
+                        params: {
+                            id: value.example.combo
+                        }
                     }
                 }
             }
             value.attribute = attribute;
             value.key = key;
-            // console.log(x);
         })
     }
     /**
