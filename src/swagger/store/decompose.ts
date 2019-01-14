@@ -338,7 +338,7 @@ class ObservableStore {
             const schema = lodash.find(parameters, '$ref');
             const key = schema.$ref.match(/#\/definitions\/\S+\W(\w+)\W+/)[1];
             const definitions = lodash.cloneDeep(this.definitions[key]);
-            this.setAttribute(definitions);
+            this.setAttribute(definitions, true);
             this.Model.search = lodash.toArray(definitions.properties);
         } catch (error) {
             console.error("搜索列解析失败", error);
