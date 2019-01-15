@@ -54,7 +54,8 @@ class ObservableStore {
         // 模型列表
         definitions: {},
         // 错误列表
-        error: []
+        error: [],
+        paths: []
     };
     /**
      * 公共接口
@@ -196,12 +197,17 @@ class ObservableStore {
             common: [],
             // 模型列表
             definitions: { ...definitions },
-            error: []
+            error: [],
+            paths: []
         };
 
         // 分组所有 api 地址
         lodash.forEach(paths, (value, key) => {
             try {
+                format.paths.push({
+                    key,
+                    value
+                })
                 // 排除的控制器
                 if (wtmfront.exclude.some(x => lodash.includes(key, x))) return
                 // const detail = lodash.find(value, (o) => o.tags && o.tags.length);
@@ -290,6 +296,7 @@ class ObservableStore {
             message: `解析完成`,
             description: `成功（${format.tags.length}）失败（${format.error.length}）`,
         })
+        console.log(format);
         return format;
     }
     /**

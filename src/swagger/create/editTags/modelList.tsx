@@ -212,7 +212,7 @@ class AnalysisSelect extends React.Component<{ type: 'columns' | 'search' | 'ins
     }
   }
   onSelectChange(e) {
-    const errPath = swaggerDoc.docData.error.find(x => x.key == e)
+    const errPath = swaggerDoc.docData.paths.find(x => x.key == e)
     if (errPath) {
       this.selectValue = toJS(errPath.value["get"] || errPath.value["post"]);
     }
@@ -229,7 +229,7 @@ class AnalysisSelect extends React.Component<{ type: 'columns' | 'search' | 'ins
             onChange={this.onSelectChange.bind(this)}
             filterOption={(inputValue, option) => option.key.toString().indexOf(inputValue) > -1}
           >
-            {swaggerDoc.docData.error.map(x => {
+            {swaggerDoc.docData.paths.map(x => {
               return <Select.Option key={x.key} value={x.key}>{x.key}</Select.Option>
             })}
           </Select>
