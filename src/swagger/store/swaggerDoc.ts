@@ -102,7 +102,10 @@ class ObservableStore {
      */
     async create(param?) {
         // return console.log(toJS(param));
-        const data = await Http.post("/server/create", param).map(this.map).toPromise();
+        const data = await Http.post("/server/create", param.map(x => {
+            x.actions = [];
+            return x
+        })).map(this.map).toPromise();
         if (data) {
             decompose.onReset();
             decompose.onEmpty();
@@ -119,10 +122,10 @@ class ObservableStore {
         }
         return data;
     }
-     /**
-     * 修改模块
-     * @param param 
-     */
+    /**
+    * 修改模块
+    * @param param 
+    */
     async update(param?) {
         const data = await Http.post("/server/update", param).map(this.map).toPromise();
         if (data) {
@@ -142,7 +145,7 @@ class ObservableStore {
      */
     async  delete(param) {
         delete param.pageConfig
-        const data = await Http.post("/server/delete",param).map(this.map).toPromise();
+        const data = await Http.post("/server/delete", param).map(this.map).toPromise();
         if (data) {
             this.getContainers();
             notification['success']({
